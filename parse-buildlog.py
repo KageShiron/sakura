@@ -146,10 +146,10 @@ def writeToXLSX(outfile, data):
 	# CELL に設定する値を変換する関数を返す
 	def getEntryConverter():
 		def converterPython3(value):
-			return value.encode('utf_8')
+			return value.encode().decode('utf-8')
 	
 		def converterPython2(value):
-			return value.decode('shiftjis').encode('utf_8')
+			return value.decode('cp932').encode('utf_8')
 
 		(major, minor, patchlevel) = platform.python_version_tuple()
 		if int(major) >= 3:
@@ -248,7 +248,7 @@ def writeToXLSX(outfile, data):
 		#############################################################################
 		worksheetIndex = 0
 		errorKeys = errorSummary.keys()
-		errorKeys.sort()
+		list(errorKeys).sort()
 		for errorKey in errorKeys:
 			worksheetIndex = worksheetIndex + 1
 
