@@ -14,6 +14,6 @@ if "%CMD_7Z%" == "" (
 	@echo -------------------------------------------------------
 	powershell -ExecutionPolicy RemoteSigned -File %~dp0unzip.ps1 %SRCZIP% %OUTDIR%
 ) else (
-	"%CMD_7Z%" x "%SRCZIP%"  -O"%OUTDIR%"
+	mkdir -p "%OUTDIR%" & tar.exe -xf "%SRCZIP%" -C "%OUTDIR%"
 )
 @echo on

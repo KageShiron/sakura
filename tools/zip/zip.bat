@@ -14,6 +14,6 @@ if "%CMD_7Z%" == "" (
 	@echo -------------------------------------------------------
 	powershell -ExecutionPolicy RemoteSigned -File %~dp0zip.ps1 %DSTZIP% %SRCDIR%
 ) else (
-	"%CMD_7Z%" a "%DSTZIP%"  -r "%SRCDIR%"
+	tar.exe -a -cf "%DSTZIP%" "%SRCDIR%"
 )
 @echo on
