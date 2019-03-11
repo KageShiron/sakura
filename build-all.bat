@@ -47,14 +47,14 @@ call build-installer.bat %PLATFORM% %CONFIGURATION% || (echo error build-install
 @echo ---- end   build-installer.bat ----
 @echo.
 
-@echo ---- start externals\cppcheck\install-cppcheck.bat ----
-call externals\cppcheck\install-cppcheck.bat        || (echo error externals\cppcheck\install-cppcheck.bat && exit /b 1)
-@echo ---- end   externals\cppcheck\install-cppcheck.bat ----
-@echo.
-
 @echo ---- start run-cppcheck.bat ----
 call run-cppcheck.bat %PLATFORM% %CONFIGURATION%    || (echo error run-cppcheck.bat    && exit /b 1)
 @echo ---- end   run-cppcheck.bat ----
+@echo.
+
+@echo ---- start run-doxygen.bat ----
+call run-doxygen.bat %PLATFORM% %CONFIGURATION%     || (echo error run-doxygen.bat     && exit /b 1)
+@echo ---- end   run-doxygen.bat ----
 @echo.
 
 @echo ---- start zipArtifacts.bat ----

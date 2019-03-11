@@ -60,7 +60,6 @@
 #include "util/os.h"
 #include "sakura_rc.h"
 
-
 /* 新規作成 */
 void CViewCommander::Command_FILENEW( void )
 {
@@ -73,8 +72,6 @@ void CViewCommander::Command_FILENEW( void )
 	CControlTray::OpenNewEditor( G_AppInstance(), m_pCommanderView->GetHwnd(), sLoadInfo, NULL, false, curDir.c_str(), false );
 	return;
 }
-
-
 
 /* 新規作成（新しいウインドウで開く） */
 void CViewCommander::Command_FILENEW_NEWWINDOW( void )
@@ -93,8 +90,6 @@ void CViewCommander::Command_FILENEW_NEWWINDOW( void )
 		);
 	return;
 }
-
-
 
 /*! @brief ファイルを開く
 
@@ -168,8 +163,6 @@ void CViewCommander::Command_FILEOPEN( const WCHAR* filename, ECodeType nCharCod
 	GetDocument()->m_cDocFileOperation.FileLoad( &sLoadInfo );
 }
 
-
-
 /*! 上書き保存
 
 	F_FILESAVEALLとの組み合わせのみで使われるコマンド．
@@ -205,15 +198,11 @@ bool CViewCommander::Command_FILESAVE( bool warnbeep, bool askname )
 	return bRet;
 }
 
-
-
 /* 名前を付けて保存ダイアログ */
 bool CViewCommander::Command_FILESAVEAS_DIALOG(const WCHAR* fileNameDef,ECodeType eCodeType, EEolType eEolType)
 {
 	return 	GetDocument()->m_cDocFileOperation.FileSaveAs(fileNameDef, eCodeType, eEolType, true);
 }
-
-
 
 /* 名前を付けて保存
 	filenameで保存。NULLは厳禁。
@@ -222,8 +211,6 @@ BOOL CViewCommander::Command_FILESAVEAS( const WCHAR* filename, EEolType eEolTyp
 {
 	return 	GetDocument()->m_cDocFileOperation.FileSaveAs(filename, CODE_NONE, eEolType, false);
 }
-
-
 
 /*!	全て上書き保存
 
@@ -245,15 +232,11 @@ BOOL CViewCommander::Command_FILESAVEALL( void )
 	return TRUE;
 }
 
-
-
 /* 閉じて(無題) */	//Oct. 17, 2000 jepro 「ファイルを閉じる」というキャプションを変更
 void CViewCommander::Command_FILECLOSE( void )
 {
 	GetDocument()->m_cDocFileOperation.FileClose();
 }
-
-
 
 /*! @brief 閉じて開く
 
@@ -265,15 +248,8 @@ void CViewCommander::Command_FILECLOSE_OPEN( LPCWSTR filename, ECodeType nCharCo
 	GetDocument()->m_cDocFileOperation.FileCloseOpen( SLoadInfo(to_tchar(filename), nCharCode, bViewMode) );
 
 	//プラグイン：DocumentOpenイベント実行
-	CPlug::Array plugs;
-	CWSHIfObj::List params;
-	CJackManager::getInstance()->GetUsablePlug( PP_DOCUMENT_OPEN, 0, &plugs );
-	for( CPlug::ArrayIter it = plugs.begin(); it != plugs.end(); it++ ){
-		(*it)->Invoke(&GetEditWindow()->GetActiveView(), params);
-	}
+	CJackManager::getInstance()->InvokePlugins( PP_DOCUMENT_OPEN, &GetEditWindow()->GetActiveView() );
 }
-
-
 
 //! ファイルの再オープン
 void CViewCommander::Command_FILE_REOPEN(
@@ -301,8 +277,6 @@ void CViewCommander::Command_FILE_REOPEN(
 	pcDoc->m_cDocFileOperation.ReloadCurrentFile( nCharCode );
 }
 
-
-
 /* 印刷 */
 void CViewCommander::Command_PRINT( void )
 {
@@ -313,8 +287,6 @@ void CViewCommander::Command_PRINT( void )
 	GetEditWindow()->m_pPrintPreview->OnPrint();
 }
 
-
-
 /* 印刷プレビュー */
 void CViewCommander::Command_PRINT_PREVIEW( void )
 {
@@ -323,8 +295,6 @@ void CViewCommander::Command_PRINT_PREVIEW( void )
 	return;
 }
 
-
-
 /* 印刷のページレイアウトの設定 */
 void CViewCommander::Command_PRINT_PAGESETUP( void )
 {
@@ -332,8 +302,6 @@ void CViewCommander::Command_PRINT_PAGESETUP( void )
 	GetEditWindow()->OnPrintPageSetting();
 	return;
 }
-
-
 
 //From Here Feb. 10, 2001 JEPRO 追加
 /* C/C++ヘッダファイルまたはソースファイル オープン機能 */
@@ -346,8 +314,6 @@ BOOL CViewCommander::Command_OPEN_HfromtoC( BOOL bCheckOnly )
 // 2002/03/24 YAZAKI コードの重複を削減
 // 2003.06.28 Moca コメントとして残っていたコードを削除
 }
-
-
 
 /* C/C++ヘッダファイル オープン機能 */		//Feb. 10, 2001 jepro	説明を「インクルードファイル」から変更
 //BOOL CViewCommander::Command_OPENINCLUDEFILE( BOOL bCheckOnly )
@@ -362,8 +328,6 @@ BOOL CViewCommander::Command_OPEN_HHPP( BOOL bCheckOnly, BOOL bBeepWhenMiss )
 		LS(STR_ERR_CEDITVIEW_CMD08) );
 }
 
-
-
 /* C/C++ソースファイル オープン機能 */
 //BOOL CViewCommander::Command_OPENCCPP( BOOL bCheckOnly )	//Feb. 10, 2001 JEPRO	コマンド名を若干変更
 BOOL CViewCommander::Command_OPEN_CCPP( BOOL bCheckOnly, BOOL bBeepWhenMiss )
@@ -376,8 +340,6 @@ BOOL CViewCommander::Command_OPEN_CCPP( BOOL bCheckOnly, BOOL bBeepWhenMiss )
 		_countof(header_ext), _countof(source_ext),
 		LS(STR_ERR_CEDITVIEW_CMD09));
 }
-
-
 
 /* Oracle SQL*Plusをアクティブ表示 */
 void CViewCommander::Command_ACTIVATE_SQLPLUS( void )
@@ -393,8 +355,6 @@ void CViewCommander::Command_ACTIVATE_SQLPLUS( void )
 	ActivateFrameWindow( hwndSQLPLUS );
 	return;
 }
-
-
 
 /* Oracle SQL*Plusで実行 */
 void CViewCommander::Command_PLSQL_COMPILE_ON_SQLPLUS( void )
@@ -478,8 +438,6 @@ void CViewCommander::Command_PLSQL_COMPILE_ON_SQLPLUS( void )
 	return;
 }
 
-
-
 /* ブラウズ */
 void CViewCommander::Command_BROWSE( void )
 {
@@ -513,8 +471,6 @@ void CViewCommander::Command_BROWSE( void )
 	return;
 }
 
-
-
 /* ビューモード */
 void CViewCommander::Command_VIEWMODE( void )
 {
@@ -532,8 +488,6 @@ void CViewCommander::Command_VIEWMODE( void )
 	// 親ウィンドウのタイトルを更新
 	GetEditWindow()->UpdateCaption();
 }
-
-
 
 /* ファイルのプロパティ */
 void CViewCommander::Command_PROPERTY_FILE( void )
@@ -553,14 +507,11 @@ void CViewCommander::Command_PROPERTY_FILE( void )
 	}
 #endif
 
-
 	CDlgProperty	cDlgProperty;
 //	cDlgProperty.Create( G_AppInstance(), m_pCommanderView->GetHwnd(), GetDocument() );
 	cDlgProperty.DoModal( G_AppInstance(), m_pCommanderView->GetHwnd(), (LPARAM)GetDocument() );
 	return;
 }
-
-
 
 void CViewCommander::Command_PROFILEMGR( void )
 {
@@ -575,7 +526,6 @@ void CViewCommander::Command_PROFILEMGR( void )
 		CControlTray::OpenNewEditor( G_AppInstance(), m_pCommanderView->GetHwnd(), sLoadInfo, szOpt, false, NULL, false );
 	}
 }
-
 
 /* ファイルの場所を開く */
 void CViewCommander::Command_OPEN_FOLDER_IN_EXPLORER(void)
@@ -602,8 +552,6 @@ void CViewCommander::Command_OPEN_FOLDER_IN_EXPLORER(void)
 
 	return;
 }
-
-
 
 /* コマンドプロンプトを開く */
 void CViewCommander::Command_OPEN_COMMAND_PROMPT(BOOL isAdmin)
@@ -649,13 +597,13 @@ void CViewCommander::Command_OPEN_COMMAND_PROMPT(BOOL isAdmin)
 
 #ifndef _WIN64
 	/*
-		64bit OS で 32bit アプリから管理者権限でコマンドプロンプトを起動する場合
+		64bit OS で 32bit アプリからコマンドプロンプトを起動する場合
 		通常は 32bit 版のコマンドプロンプトが開かれる。
 
 		Wow64 の FileSystem Redirection を一時的にオフにすることにより 64bit 版の
 		コマンドプロンプトを起動する
 	*/
-	CDisableWow64FsRedirect wow64Redirect(isAdmin);
+	CDisableWow64FsRedirect wow64Redirect(TRUE);
 #endif
 	auto hInstance = ::ShellExecuteW(NULL, pVerb, szCmdExePathBuf, pszcmdExeParam, strFolder.c_str(), SW_SHOWNORMAL);
 	// If the function succeeds, it returns a value greater than 32. 
@@ -665,6 +613,49 @@ void CViewCommander::Command_OPEN_COMMAND_PROMPT(BOOL isAdmin)
 	}
 }
 
+/* PowerShellを開く */
+void CViewCommander::Command_OPEN_POWERSHELL(BOOL isAdmin)
+{
+	if (!GetDocument()->m_cDocFile.GetFilePathClass().IsValidPath()) {
+		ErrorBeep();
+		return;
+	}
+
+	std::wstring strFolder(GetDocument()->m_cDocFile.GetFilePathClass().GetDirPath());
+
+	/*
+		PowerShell でコマンドレットを実行するために -Command を使用する
+		Set-Location -Path 'ディレクトリ' で指定したディレクトリに移動する
+		-Command を使用する際は -NoExit を指定して PowerShell が終了しないようにする
+		(-NoExit がない場合は -Command で指定したコマンドレットが終了すると PowerShellも終了する)
+	*/
+	CNativeW cmdExeParam;
+	cmdExeParam.AppendStringF(L"-NoExit -Command \"Set-Location -Path '%s'\"", strFolder.c_str());
+	LPCWSTR pszcmdExeParam = cmdExeParam.GetStringPtr();
+
+	LPWSTR pVerb = L"open";
+	if (isAdmin)
+	{
+		pVerb = L"runas";
+	}
+
+#ifndef _WIN64
+	/*
+		64bit OS で 32bit アプリから PowerShell を起動する場合
+		通常は 32bit 版の PowerShell が開かれる。
+
+		Wow64 の FileSystem Redirection を一時的にオフにすることにより 64bit 版の
+		PowerShell を起動する
+	*/
+	CDisableWow64FsRedirect wow64Redirect(TRUE);
+#endif
+	auto hInstance = ::ShellExecuteW(NULL, pVerb, L"powershell.exe", pszcmdExeParam, strFolder.c_str(), SW_SHOWNORMAL);
+	// If the function succeeds, it returns a value greater than 32. 
+	if (hInstance <= (decltype(hInstance))32) {
+		ErrorBeep();
+		return;
+	}
+}
 
 /* 編集の全終了 */	// 2007.02.13 ryoji 追加
 void CViewCommander::Command_EXITALLEDITORS( void )
@@ -673,16 +664,12 @@ void CViewCommander::Command_EXITALLEDITORS( void )
 	return;
 }
 
-
-
 /* サクラエディタの全終了 */	//Dec. 27, 2000 JEPRO 追加
 void CViewCommander::Command_EXITALL( void )
 {
 	CControlTray::TerminateApplication( GetMainWindow() );	// 2006.12.25 ryoji 引数追加
 	return;
 }
-
-
 
 /*!	@brief 編集中の内容を別名保存
 
@@ -803,8 +790,6 @@ BOOL CViewCommander::Command_PUTFILE(
 	return bResult;
 }
 
-
-
 /*!	@brief カーソル位置にファイルを挿入
 
 	現在のカーソル位置に指定のファイルを読み込む．
@@ -846,7 +831,6 @@ BOOL CViewCommander::Command_INSFILE( LPCWSTR filename, ECodeType nCharCode, int
 	if (bBeforeTextSelected){
 		ptFrom = m_pCommanderView->GetSelectionInfo().m_sSelect.GetFrom();
 	}
-
 
 	ECodeType	nSaveCharCode = nCharCode;
 	if(nSaveCharCode == CODE_AUTODETECT) {

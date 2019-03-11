@@ -33,6 +33,7 @@
 #include "util/file.h"
 #include "util/os.h"
 #include "util/module.h"
+#include "util/window.h"
 #include "env/CShareData.h"
 #include "env/DLLSHAREDATA.h"
 #include "extmodule/CHtmlHelp.h"
@@ -52,9 +53,7 @@ int CALLBACK MYBrowseCallbackProc(
 		break;
 	}
 	return 0;
-
 }
-
 
 /* フォルダ選択ダイアログ */
 BOOL SelectDir( HWND hWnd, const TCHAR* pszTitle, const TCHAR* pszInitFolder, TCHAR* strFolderName )
@@ -96,8 +95,6 @@ BOOL SelectDir( HWND hWnd, const TCHAR* pszTitle, const TCHAR* pszInitFolder, TC
 	}
 	return FALSE;
 }
-
-
 
 /*!	特殊フォルダのパスを取得する
 	SHGetSpecialFolderPath API（shell32.dll version 4.71以上が必要）と同等の処理をする
@@ -142,8 +139,6 @@ BOOL GetSpecialFolderPath( int nFolder, LPTSTR pszPath )
 	return bRet;
 }
 
-
-
 ///////////////////////////////////////////////////////////////////////
 // From Here 2007.05.25 ryoji 独自拡張のプロパティシート関数群
 
@@ -170,7 +165,7 @@ static LRESULT CALLBACK PropSheetWndProc( HWND hwnd, UINT uMsg, WPARAM wParam, L
 			pt.x = rcTab.left;
 			pt.y = rcOk.top;
 			::ScreenToClient( hwnd, &pt );
-			::MoveWindow( hwndBtn, pt.x, pt.y, 140, rcOk.bottom - rcOk.top, FALSE );
+			::MoveWindow( hwndBtn, pt.x, pt.y, DpiScaleX(140), rcOk.bottom - rcOk.top, FALSE );
 		}
 		break;
 
@@ -281,7 +276,6 @@ static int CALLBACK PropSheetProc( HWND hwndDlg, UINT uMsg, LPARAM lParam )
 	return 0;
 }
 
-
 /*!	独自拡張プロパティシート（共通設定／タイプ別設定画面用）
 	@author ryoji
 	@date 2007.05.25 新規
@@ -296,12 +290,8 @@ INT_PTR MyPropertySheet( LPPROPSHEETHEADER lppsph )
 	return ::PropertySheet( lppsph );
 }
 
-
 // To Here 2007.05.25 ryoji 独自拡張のプロパティシート関数群
 ///////////////////////////////////////////////////////////////////////
-
-
-
 
 /*	ヘルプの目次を表示
 	目次タブを表示。問題があるバージョンでは、目次ページを表示。
@@ -312,10 +302,6 @@ void ShowWinHelpContents( HWND hwnd )
 	MyWinHelp( hwnd, HELP_COMMAND, (ULONG_PTR)"CONTENTS()" );	// 2006.10.10 ryoji MyWinHelpに変更
 	return;
 }
-
-
-
-
 
 // Stonee, 2001/12/21
 // NetWork上のリソースに接続するためのダイアログを出現させる
@@ -358,9 +344,6 @@ DWORD NetConnect ( const TCHAR strNetWorkPass[] )
 	return dwRet;
 }
 
-
-
-
 //	From Here Jun. 26, 2001 genta
 /*!
 	HTML Helpコンポーネントのアクセスを提供する。
@@ -400,9 +383,6 @@ HWND OpenHtmlHelp(
 }
 
 //	To Here Jun. 26, 2001 genta
-
-
-
 
 /*! ショートカット(.lnk)の解決
 	@date 2009.01.08 ryoji CoInitialize/CoUninitializeを削除（WinMainにOleInitialize/OleUninitializeを追加）
@@ -475,10 +455,6 @@ BOOL ResolveShortcutLink( HWND hwnd, LPCTSTR lpszLinkFile, LPTSTR lpszPath )
 // 2009.01.08 ryoji CoUninitializeを削除（WinMainにOleUninitialize追加）
 	return bRes;
 }
-
-
-
-
 
 /*! ヘルプファイルのフルパスを返す
  

@@ -67,6 +67,7 @@ void CShareData_IO::SaveShareData()
 	共有データの読み込み/保存 2
 
 	@param[in] bRead true: 読み込み / false: 書き込み
+	@return 設定データの読み込み/保存が成功したかどうか
 
 	@date 2004-01-11 D.S.Koba CProfile変更によるコード簡略化
 	@date 2005-04-05 D.S.Koba 各セクションの入出力を関数として分離
@@ -91,10 +92,18 @@ bool CShareData_IO::ShareData_IO_2( bool bRead )
 
 //	MYTRACE( _T("Iniファイル処理-1 所要時間(ミリ秒) = %d\n"), cRunningTimer.Read() );
 
-
 	if( bRead ){
 		if( !cProfile.ReadProfile( szIniFileName ) ){
 			/* 設定ファイルが存在しない */
+			LANGID langId = GetUserDefaultUILanguage();
+			// Windowsの表示言語が日本語でない場合は言語設定を英語にする
+			if (langId != MAKELANGID( LANG_JAPANESE, SUBLANG_JAPANESE_JAPAN )) {
+				DLLSHAREDATA* pShareData = &GetDllShareData();
+				_tcscpy(pShareData->m_Common.m_sWindow.m_szLanguageDll, L"sakura_lang_en_US.dll");
+				cProfile.IOProfileData( L"Common", L"szLanguageDll", MakeStringBufferT( pShareData->m_Common.m_sWindow.m_szLanguageDll ) );
+				CSelectLang::ChangeLang( pShareData->m_Common.m_sWindow.m_szLanguageDll );
+				pcShare->RefreshString();
+			}
 			return false;
 		}
 
@@ -319,6 +328,24 @@ void CShareData_IO::ShareData_IO_Grep( CDataProfile& cProfile )
 		auto_sprintf( szKeyName, LTEXT("GREPFOLDER[%02d]"), i );
 		cProfile.IOProfileData( pszSecName, szKeyName, pShare->m_sSearchKeywords.m_aGrepFolders[i] );
 	}
+
+	/* 除外ファイルパターン */
+	cProfile.IOProfileData(pszSecName, LTEXT("_GREPEXCLUDEFILE_Counts"), pShare->m_sSearchKeywords.m_aExcludeFiles._GetSizeRef());
+	pShare->m_sSearchKeywords.m_aExcludeFiles.SetSizeLimit();
+	nSize = pShare->m_sSearchKeywords.m_aExcludeFiles.size();
+	for (i = 0; i < nSize; ++i) {
+		auto_sprintf(szKeyName, LTEXT("GREPEXCLUDEFILE[%02d]"), i);
+		cProfile.IOProfileData(pszSecName, szKeyName, pShare->m_sSearchKeywords.m_aExcludeFiles[i]);
+	}
+
+	/* 除外フォルダパターン */
+	cProfile.IOProfileData(pszSecName, LTEXT("_GREPEXCLUDEFOLDER_Counts"), pShare->m_sSearchKeywords.m_aExcludeFolders._GetSizeRef());
+	pShare->m_sSearchKeywords.m_aExcludeFolders.SetSizeLimit();
+	nSize = pShare->m_sSearchKeywords.m_aExcludeFolders.size();
+	for (i = 0; i < nSize; ++i) {
+		auto_sprintf(szKeyName, LTEXT("GREPEXCLUDEFOLDER[%02d]"), i);
+		cProfile.IOProfileData(pszSecName, szKeyName, pShare->m_sSearchKeywords.m_aExcludeFolders[i]);
+	}
 }
 
 /*!
@@ -462,6 +489,7 @@ void CShareData_IO::ShareData_IO_Common( CDataProfile& cProfile )
 	cProfile.IOProfileData_WrapInt( pszSecName, LTEXT("eOpenDialogDir")		, common.m_sEdit.m_eOpenDialogDir );
 	cProfile.IOProfileData( pszSecName, LTEXT("szOpenDialogSelDir")		, StringBufferT(common.m_sEdit.m_OpenDialogSelDir,_countof2(common.m_sEdit.m_OpenDialogSelDir)) );
 	cProfile.IOProfileData( pszSecName, LTEXT("bBoxSelectLock")	, common.m_sEdit.m_bBoxSelectLock );
+	cProfile.IOProfileData( pszSecName, LTEXT("bVistaStyleFileDialog")	, common.m_sEdit.m_bVistaStyleFileDialog );
 	cProfile.IOProfileData( pszSecName, LTEXT("nRepeatedScrollLineNum")	, common.m_sGeneral.m_nRepeatedScrollLineNum );
 	cProfile.IOProfileData( pszSecName, LTEXT("nRepeatedMoveCaretNum")	, common.m_sGeneral.m_nRepeatedMoveCaretNum );
 	cProfile.IOProfileData( pszSecName, LTEXT("nRepeatedScroll_Smooth")	, common.m_sGeneral.m_nRepeatedScroll_Smooth );
@@ -529,7 +557,6 @@ void CShareData_IO::ShareData_IO_Common( CDataProfile& cProfile )
 		}
 	}
 	
-	
 	cProfile.IOProfileData( pszSecName, LTEXT("nBackUpType")			, common.m_sBackup.m_nBackUpType );
 	cProfile.IOProfileData( pszSecName, LTEXT("bBackUpType2_Opt1")		, common.m_sBackup.m_nBackUpType_Opt1 );
 	cProfile.IOProfileData( pszSecName, LTEXT("bBackUpType2_Opt2")		, common.m_sBackup.m_nBackUpType_Opt2 );
@@ -550,7 +577,6 @@ void CShareData_IO::ShareData_IO_Common( CDataProfile& cProfile )
 		ShareData_IO_Sub_LogFont( cProfile, pszSecName, L"khlf", L"khps", L"khlfFaceName",
 			common.m_sHelper.m_lf, common.m_sHelper.m_nPointSize );
 	}// Keword Help Font
-	
 	
 	cProfile.IOProfileData( pszSecName, LTEXT("nMRUArrNum_MAX")			, common.m_sGeneral.m_nMRUArrNum_MAX );
 	SetValueLimit( common.m_sGeneral.m_nMRUArrNum_MAX, MAX_MRU );
@@ -727,7 +753,6 @@ void CShareData_IO::ShareData_IO_Common( CDataProfile& cProfile )
 	cProfile.IOProfileData( pszSecName, LTEXT("szFileTreeDefIniName"), common.m_sOutline.m_sFileTreeDefIniName );
 }
 
-
 // プラグインコマンドを名前から機能番号へ変換
 EFunctionCode GetPlugCmdInfoByName(
 	const WCHAR*	pszFuncName			//!< [in]  プラグインコマンド名
@@ -790,7 +815,6 @@ bool GetPlugCmdInfoByFuncCode(
 	auto_sprintf(pszFuncName, L"%ls/%02d", plugin.m_PluginTable[nID].m_szId, nNo);
 	return true;
 }
-
 
 /*! プラグイン名or機能番号文字列をEFunctionCodeにする
 
@@ -912,7 +936,6 @@ void CShareData_IO::ShareData_IO_CustMenu( CDataProfile& cProfile )
 */
 void CShareData_IO::IO_CustMenu( CDataProfile& cProfile, CommonSetting_CustomMenu& menu, bool bOutCmdName)
 {
-
 	const WCHAR* pszSecName = LTEXT("CustMenu");
 	int		i, j;
 	WCHAR	szKeyName[64];
@@ -1534,7 +1557,6 @@ void CShareData_IO::ShareData_IO_Type_One( CDataProfile& cProfile, STypeConfig& 
 		pos = types.m_cLineComment.getLineCommentPos( 2 );
 		cProfile.IOProfileData( pszSecName, LTEXT("nLineCommentColumn3"), pos );	//Jun. 01, 2001 JEPRO 追加
 		//	To here May 12, 2001 genta
-
 	}
 	// To Here Sep. 28, 2002 genta / YAZAKI
 
@@ -1623,6 +1645,7 @@ void CShareData_IO::ShareData_IO_Type_One( CDataProfile& cProfile, STypeConfig& 
 	cProfile.IOProfileData( pszSecName, L"bgImgRepeartY",  types.m_backImgRepeatY );
 	cProfile.IOProfileData_WrapInt( pszSecName, L"bgImgPosOffsetX",  types.m_backImgPosOffset.x );
 	cProfile.IOProfileData_WrapInt( pszSecName, L"bgImgPosOffsetY",  types.m_backImgPosOffset.y );
+	cProfile.IOProfileData_WrapInt( pszSecName, L"bgImgOpacity", types.m_backImgOpacity );
 
 	// 2005.11.08 Moca 指定桁縦線
 	for(j = 0; j < MAX_VERTLINES; j++ ){
@@ -2068,7 +2091,6 @@ void CShareData_IO::ShareData_IO_MainMenu( CDataProfile& cProfile )
 	}
 }
 
-
 /*!
 	@brief 共有データのMainMenuセクションの入出力
 	@param[in,out]	cProfile	INIファイル入出力クラス
@@ -2349,8 +2371,6 @@ void CShareData_IO::IO_ColorSet( CDataProfile* pcProfile, const WCHAR* pszSecNam
 	}
 }
 
-
-
 // -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- //
 //                         実装補助                            //
 // -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- //
@@ -2408,7 +2428,6 @@ void ShareData_IO_Sub_LogFont( CDataProfile& cProfile, const WCHAR* pszSecName,
 	
 	cProfile.IOProfileData( pszSecName, pszKeyFaceName, MakeStringBufferT(lf.lfFaceName) );
 }
-
 
 void CShareData_IO::ShareData_IO_FileTree( CDataProfile& cProfile, SFileTree& fileTree, const WCHAR* pszSecName )
 {

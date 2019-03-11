@@ -100,6 +100,8 @@ F_EXITALL					= 30195,	//サクラエディタの全終了			なし
 F_OPEN_FOLDER_IN_EXPLORER	= 30196,	//ファイルの場所を開く
 F_OPEN_COMMAND_PROMPT		= 30197,	//コマンドプロンプトを開く
 F_OPEN_COMMAND_PROMPT_AS_ADMIN		= 30198,	//管理者としてコマンドプロンプトを開く
+F_OPEN_POWERSHELL				= 31456,	//PowerShellを開く
+F_OPEN_POWERSHELL_AS_ADMIN		= 31457,	//管理者としてPowerShellを開く
 
 // 編集系
 F_WCHAR				= 30200,	//文字入力									WCHAR c
@@ -256,6 +258,7 @@ F_COPYPATH					= 30620,	//このファイルのパス名をクリップボード
 F_COPYTAG					= 30621,	//このファイルのパス名とカーソル位置をコピー	なし
 F_COPYFNAME					= 30622,	//このファイル名をクリップボードにコピー		なし
 F_CREATEKEYBINDLIST			= 30630,	//キー割り当て一覧をコピー						なし
+F_COPYDIRPATH				= 30631,	//このファイルのフォルダ名をクリップボードにコピー	なし
 
 
 // 挿入系

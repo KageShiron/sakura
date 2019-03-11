@@ -44,6 +44,7 @@
 #include "env/CDocTypeManager.h"
 #include "CEditApp.h"
 #include "util/shell.h"
+#include "util/window.h"
 #include "sakura_rc.h"
 
 int	CPropCommon::SearchIntArr( int nKey, int* pnArr, int nArrNum )
@@ -56,7 +57,6 @@ int	CPropCommon::SearchIntArr( int nKey, int* pnArr, int nArrNum )
 	}
 	return -1;
 }
-
 
 /*!
 	プロパティページごとのWindow Procedureを引数に取ることで
@@ -157,17 +157,9 @@ CPropCommon::CPropCommon()
 	return;
 }
 
-
-
-
-
 CPropCommon::~CPropCommon()
 {
 }
-
-
-
-
 
 /* 初期化 */
 //@@@ 2002.01.03 YAZAKI m_tbMyButtonなどをCShareDataからCMenuDrawerへ移動したことによる修正。
@@ -186,11 +178,6 @@ void CPropCommon::Create( HWND hwndParent, CImageListMgr* pcIcons, CMenuDrawer* 
 
 	return;
 }
-
-
-
-
-
 
 //	From Here Jun. 2, 2001 genta
 /*!
@@ -382,8 +369,6 @@ void CPropCommon::ApplyData( int* tempTypeKeywordSet )
 	}
 }
 
-
-
 /* ヘルプ */
 //Stonee, 2001/05/18 機能番号からヘルプトピック番号を調べるようにした
 void CPropCommon::OnHelp( HWND hwndParent, int nPageID )
@@ -463,8 +448,6 @@ void CPropCommon::OnHelp( HWND hwndParent, int nPageID )
 	return;
 }
 
-
-
 /*!	コントロールにフォント設定する
 	@date 2013.04.24 Uchi
 */
@@ -484,8 +467,6 @@ HFONT CPropCommon::SetCtrlFont( HWND hwndDlg, int idc_ctrl, const LOGFONT& lf )
 	return hFont;
 }
 
-
-
 /*!	フォントラベルにフォントとフォント名設定する
 	@date 2013.04.24 Uchi
 */
@@ -495,9 +476,11 @@ HFONT CPropCommon::SetFontLabel( HWND hwndDlg, int idc_static, const LOGFONT& lf
 	TCHAR	szFontName[80];
 	LOGFONT lfTemp;
 	lfTemp = lf;
+
 	// 大きすぎるフォントは小さく表示
-	if( lfTemp.lfHeight < -16 ){
-		lfTemp.lfHeight = -16;
+	LONG limitSize = ::DpiPointsToPixels( 16 );
+	if ( lfTemp.lfHeight < -limitSize ) {
+		lfTemp.lfHeight = -limitSize;
 	}
 
 	hFont = SetCtrlFont( hwndDlg, idc_static, lfTemp );

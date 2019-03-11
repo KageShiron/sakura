@@ -79,12 +79,12 @@ en.fileassoc=Add "Open with SAKURA &Editor"
 ja.fileassoc=「SAKURA Editorで開く」メニューの追加(&E)
 en.sendto=Add to Send&To Menu
 ja.sendto=送るに追加(&T)
-en.sakuragrep=Add "Grep with SAKURA Editor"
-ja.sakuragrep=「SAKURA EditorでGrep」メニューの追加
+en.sakuragrep=Add "&Grep with SAKURA Editor"
+ja.sakuragrep=「SAKURA EditorでGrep」メニューの追加(&G)
 en.fileassocMenu=Open with SAKURA &Editor
 ja.fileassocMenu=SAKURA Editorで開く(&E)
-en.sakuragrepMenu=Grep with SAKURA Editor
-ja.sakuragrepMenu=SAKURA EditorでGrep
+en.sakuragrepMenu=&Grep with SAKURA Editor
+ja.sakuragrepMenu=SAKURA EditorでGrep(&G)
 en.residentStartup=&Resident at startup
 ja.residentStartup=起動時に常駐(&R)
 en.IconPreferencefolder=Preference folder
@@ -111,8 +111,6 @@ en.ReadyMemo_ExecProfileDir=Same as the executable file
 ja.ReadyMemo_ExecProfileDir=実行ファイルと同一ディレクトリ
 en.ReadyMemo_VirtualStoreEnable=Enable
 ja.ReadyMemo_VirtualStoreEnable=有効
-en.languageDLL=sakura_lang_en_US.dll
-ja.languageDLL=
 
 
 
@@ -248,10 +246,6 @@ FileName: "{app}\sakura.exe"; Description: "{cm:StartNow}"; WorkingDir: "{app}";
 
 [Dirs]
 Name: "{userappdata}\sakura"; Components: main; Tasks: startmenu; Check: isMultiUserEnabled
-
-[Ini]
-Filename: "{userappdata}\sakura\sakura.ini"; Section: "Common"; Key: "szLanguageDll"; String: "{cm:languageDLL}"; Check: isMultiUserEnabled
-Filename: "{app}\sakura.ini";                Section: "Common"; Key: "szLanguageDll"; String: "{cm:languageDLL}"; Check: isMultiUserDisabled
 
 [Code]
 var

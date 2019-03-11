@@ -43,6 +43,7 @@ if (MSVC)
 	)
 elseif (MINGW)
 	target_compile_options (${project_name} PRIVATE -finput-charset=utf-8 -fexec-charset=cp932)
+	target_compile_definitions (${project_name} PUBLIC $<$<CONFIG:Debug>:_DEBUG>)
 	file (GLOB_RECURSE ALL_O
 		"${CMAKE_CURRENT_LIST_DIR}/../../sakura_core/*.cpp"
 		"${CMAKE_CURRENT_LIST_DIR}/../../sakura_core/*.rc"
@@ -50,4 +51,4 @@ elseif (MINGW)
 	list (TRANSFORM ALL_O REPLACE "\\.(cpp|rc)$" ".o")
 	target_link_libraries (${project_name} PRIVATE ${ALL_O})
 endif ()
-target_link_libraries (${project_name} PRIVATE winspool ole32 oleaut32 uuid comctl32 imm32 mpr imagehlp shlwapi winmm)
+target_link_libraries (${project_name} PRIVATE winspool ole32 oleaut32 uuid comctl32 imm32 mpr imagehlp shlwapi winmm windowscodecs msimg32)

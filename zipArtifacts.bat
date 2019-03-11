@@ -202,6 +202,8 @@ copy /Y /B %INSTALLER_RESOURCES_CTAGS%\license\*.*  %WORKDIR_EXE%\license\ctags\
 copy /Y /B help\macro\macro.chm    %WORKDIR_EXE%\
 copy /Y /B help\plugin\plugin.chm  %WORKDIR_EXE%\
 copy /Y /B help\sakura\sakura.chm  %WORKDIR_EXE%\
+copy /Y /B html\sakura-doxygen.chm %WORKDIR_EXE%\
+copy /Y /B html\sakura-doxygen.chi %WORKDIR_EXE%\
 
 copy /Y /B installer\Output-%platform%\*.exe       %WORKDIR_INST%\
 copy /Y msbuild-%platform%-%configuration%.log     %WORKDIR_LOG%\
@@ -223,6 +225,9 @@ if exist "cppcheck-%platform%-%configuration%.xml" (
 )
 if exist "cppcheck-%platform%-%configuration%.log" (
 	copy /Y "cppcheck-%platform%-%configuration%.log" %WORKDIR_LOG%\
+)
+if exist "doxygen-%platform%-%configuration%.log" (
+	copy /Y "doxygen-%platform%-%configuration%.log" %WORKDIR_LOG%\
 )
 
 if exist "set_appveyor_env.bat" (

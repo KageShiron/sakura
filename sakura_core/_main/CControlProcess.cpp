@@ -14,7 +14,6 @@
 	Please contact the copyright holder to use this code for other purpose.
 */
 
-
 #include "StdAfx.h"
 #include "CControlProcess.h"
 #include "CControlTray.h"
@@ -24,9 +23,7 @@
 #include "debug/CRunningTimer.h"
 #include "sakura_rc.h"/// IDD_EXITTING 2002/2/10 aroka ヘッダ整理
 
-
 //-------------------------------------------------
-
 
 /*!
 	@brief コントロールプロセスを初期化する
@@ -90,10 +87,8 @@ bool CControlProcess::InitializeProcess()
 
 	/* 共有データのロード */
 	// 2007.05.19 ryoji 「設定を保存して終了する」オプション処理（sakuext連携用）を追加
-	TCHAR szIniFile[_MAX_PATH];
-	CShareData_IO::LoadShareData();
-	CFileNameManager::getInstance()->GetIniFileName( szIniFile, strProfileName.c_str() );	// 出力iniファイル名
-	if( !fexist(szIniFile) || CCommandLine::getInstance()->IsWriteQuit() ){
+	
+	if( !CShareData_IO::LoadShareData() || CCommandLine::getInstance()->IsWriteQuit() ){
 		/* レジストリ項目 作成 */
 		CShareData_IO::SaveShareData();
 		if( CCommandLine::getInstance()->IsWriteQuit() ){
@@ -176,5 +171,4 @@ CControlProcess::~CControlProcess()
 	}
 	::CloseHandle( m_hMutex );
 };
-
 
